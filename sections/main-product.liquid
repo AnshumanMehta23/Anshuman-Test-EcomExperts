@@ -2192,6 +2192,17 @@
 }
 {% endschema %}
 <script>
+window.onbeforeunload = function () {
+    var selects = document.querySelectorAll('select');
+    selects.forEach(function(select) {
+        var selectedOption = select.querySelector('option[selected]');
+        if (selectedOption) {
+            select.value = selectedOption.value;
+        }
+    });
+}
+
+
   document.getElementById('variant_size').addEventListener('change', function() {
         var selectedValue = this.value;
         var radioInputs = document.querySelectorAll('input[type="radio"][name="Size"]');
