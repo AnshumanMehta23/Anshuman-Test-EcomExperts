@@ -226,14 +226,8 @@ class PredictiveSearch extends SearchForm {
   }
 
   renderSearchResults(resultsMarkup) {
+    console.log(resultsMarkup);
 
-
-    const productIdToExclude = "8705737916696";
-    // Remove the product "soft winter jacket" product id "8705737916696"
-    if (resultsMarkup.includes(productIdToExclude))
-    {
-      resultsMarkup = resultsMarkup.replace(productIdToExclude, '');
-    }
     this.predictiveSearchResults.innerHTML = resultsMarkup;
     this.setAttribute('results', true);
 

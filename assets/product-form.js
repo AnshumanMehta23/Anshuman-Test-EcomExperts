@@ -82,7 +82,54 @@ if (!customElements.get('product-form')) {
               quickAddModal.hide(true);
             } else {
               this.cart.renderContents(response);
+              console.log(response);
             }
+              // Check if the product with variant id "46901487108376" was added	
+            const variantId = formData.get('id');	
+            if (variantId === '46901487108376') {	
+               // Check if the product with variant id "46874731217176" is already in the cart	
+                let isSecondProductInCart = false;	
+                fetch('/cart.js', {	
+                  method: 'GET',	
+                  headers: {	
+                    'Content-Type': 'application/json',	
+                  },	
+                }).then((response) => response.json())	
+                  .then((cartData) => {	
+                    console.log(cartData);	
+                    for (let i = 0; i < cartData.items.length; i++) {	
+                      const item = cartData.items[i];	
+                      if (item.variant_id === 46874731217176) {	
+                        isSecondProductInCart = true;	
+                        break;	
+                      }	
+                    }	
+                    	
+                    console.log(isSecondProductInCart);	
+                    	
+                    if (!isSecondProductInCart) {	
+                        // If so, initiate a request to add the product with id "46874731217176"	
+                        const additionalFormData = new FormData(this.form);	
+                        additionalFormData.set('id', '46874731217176'); // Set the desired product id	
+          	
+                        const additionalConfig = fetchConfig('javascript');	
+                        additionalConfig.headers['X-Requested-With'] = 'XMLHttpRequest';	
+                        delete additionalConfig.headers['Content-Type'];	
+                        additionalConfig.body = additionalFormData;	
+          	
+                        return fetch(`${routes.cart_add_url}`, additionalConfig)	
+                          .then((response) => response.json())	
+                          .then((response) => {	
+                            // Handle the response for the second request here (if needed)	
+                          })	
+                          .catch((e) => {	
+                            console.error(e);	
+                          });	
+                      }	
+                    	
+                    	
+                  });	
+                }
           })
           .catch((e) => {
             console.error(e);

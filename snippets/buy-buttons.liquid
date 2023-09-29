@@ -11,6 +11,7 @@
   {% render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true %}
 {% endcomment %}
 <div {{ block.shopify_attributes }}>
+
   {%- if product != blank -%}
     {%- liquid
       assign gift_card_recipient_feature_active = false
@@ -62,8 +63,23 @@
         {%- if gift_card_recipient_feature_active -%}
           {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
         {%- endif -%}
-
-        <div class="product-form__buttons">
+       {% if product.id == 8705738080536 %}
+       <div class="product-form__buttons {% if product.id != 8705738080536 %} visually-hidden{%endif%}" id="unselected_buttons">
+          <button type="button"
+            class="button button--full-width button--secondary" style="margin-bottom: 1rem;" disabled
+          >
+          <span>Add to cart
+</span>
+          </button>
+                      <button type="button" style="cursor:not-allowed;" class="shopify-payment-button__button shopify-payment-button__button--unbranded"
+            disabled
+          >
+          <span>Buy it now
+</span>
+          </button>
+       </div>
+       {% endif %}
+        <div class="product-form__buttons {% if product.id == 8705738080536 %} visually-hidden{%endif%}" id="selected_buttons">
           {%- liquid
             assign check_against_inventory = true
             if product.selected_or_first_available_variant.inventory_management != 'shopify' or product.selected_or_first_available_variant.inventory_policy == 'continue'

@@ -9,6 +9,7 @@ if (!customElements.get('product-info')) {
         this.variantSelects = this.querySelector('variant-radios');
         this.submitButton = this.querySelector('[type="submit"]');
       }
+    
 
       cartUpdateUnsubscriber = undefined;
       variantChangeUnsubscriber = undefined;

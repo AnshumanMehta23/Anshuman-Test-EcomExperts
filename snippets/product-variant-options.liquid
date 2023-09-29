@@ -59,7 +59,7 @@
         class="disabled"
       {% endif %}
     >
-    <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+    <label value="{{ value | escape }}" {% if option.name == 'Size' %}class="visually-hidden"{% endif %} {% if option.name == 'Color' %}style="font-size:0px;" {% endif %} for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
       {{ value -}}
       <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
     </label>

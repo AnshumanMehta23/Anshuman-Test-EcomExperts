@@ -1,3 +1,4 @@
+
 <section
   id="MainProduct-{{ section.id }}"
   class="page-width section-{{ section.id }}-padding"
@@ -424,6 +425,7 @@
               {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
             {%- when 'buy_buttons' -%}
               {%- render 'buy-buttons', block: block, product: product, product_form_id: product_form_id, section_id: section.id, show_pickup_availability: true -%}
+        
             {%- when 'rating' -%}
               {%- if product.metafields.reviews.rating.value != blank -%}
                 {% liquid
@@ -2189,3 +2191,60 @@
   ]
 }
 {% endschema %}
+<script>
+  document.getElementById('variant_size').addEventListener('change', function() {
+        var selectedValue = this.value;
+        var radioInputs = document.querySelectorAll('input[type="radio"][name="Size"]');
+        var button = document.getElementsByClassName('product-form__submit'); 
+    
+
+        for (var i = 0; i < radioInputs.length; i++) {
+            if (radioInputs[i].value === selectedValue) {
+                radioInputs[i].click();
+                break;
+            }
+        }
+  
+// Add a class
+document.getElementById('unselected_buttons').classList.add('visually-hidden');
+
+// Remove a class
+document.getElementById('selected_buttons').classList.remove('visually-hidden');
+
+    });
+  var productData = JSON.parse('{{ product | json }}');
+
+  var colorImages = productData.variants.map(function(variant) {
+    return {
+      color: variant.option1, // Assuming color is stored in option1
+      imageSrc: variant.featured_image.src // Assuming the image URL is stored in featured_image.src
+    };
+  });
+
+  console.log("Color Images:", colorImages);
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var labels = document.querySelectorAll('label');
+
+    labels.forEach(function(label) {
+      var value = label.getAttribute('value');
+      var colorImage = colorImages.find(function(item) {
+        return item.color === value;
+      });
+
+      if (colorImage) {
+        var img = document.createElement('img');
+        img.src = colorImage.imageSrc;
+        img.alt = value; // You can set alt text based on the value
+
+        label.appendChild(img);
+      }
+    });
+  });
+</script>
+<style>
+fieldset.js.product-form__input label img {
+    height: 35px;
+    width: auto;
+}
+</style>

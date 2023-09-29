@@ -283,7 +283,7 @@
                             </button>
                           </quantity-input>
                         </div>
-                        <cart-remove-button
+                        <cart-remove-button data-variant="{{item.id}}"
                           id="Remove-{{ item.index | plus: 1 }}"
                           data-index="{{ item.index | plus: 1 }}"
                         >

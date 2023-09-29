@@ -956,6 +956,7 @@ class VariantSelects extends HTMLElement {
   constructor() {
     super();
     this.addEventListener('change', this.onVariantChange);
+
   }
 
   onVariantChange() {
@@ -980,6 +981,7 @@ class VariantSelects extends HTMLElement {
 
   updateOptions() {
     this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+    console.log(options);
   }
 
   updateMasterId() {

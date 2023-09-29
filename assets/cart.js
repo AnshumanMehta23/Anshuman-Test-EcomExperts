@@ -3,9 +3,11 @@ class CartRemoveButton extends HTMLElement {
     super();
 
     this.addEventListener('click', (event) => {
+       
       event.preventDefault();
       const cartItems = this.closest('cart-items') || this.closest('cart-drawer-items');
-      cartItems.updateQuantity(this.dataset.index, 0);
+     // console.log();
+      cartItems.updateQuantity(this.dataset.index, 0, "", this.dataset.variant);
     });
   }
 }
@@ -43,10 +45,13 @@ class CartItems extends HTMLElement {
   }
 
   onChange(event) {
-    this.updateQuantity(event.target.dataset.index, event.target.value, document.activeElement.getAttribute('name'), event.target.dataset.quantityVariantId);
+    //console.log("onchange event");
+    this.updateQuantity(event.target.dataset.index, event.target.value, document.activeElement.getAttribute('name'), event.target.dataset.quantityVariantId); 
+    
   }
 
   onCartUpdate() {
+
     if (this.tagName === 'CART-DRAWER-ITEMS') {
       fetch(`${routes.cart_url}?section_id=cart-drawer`)
         .then((response) => response.text())
@@ -104,6 +109,7 @@ class CartItems extends HTMLElement {
   }
 
   updateQuantity(line, quantity, name, variantId) {
+    
     this.enableLoading(line);
 
     const body = JSON.stringify({
@@ -128,6 +134,8 @@ class CartItems extends HTMLElement {
           this.updateLiveRegions(line, parsedState.errors);
           return;
         }
+
+        
 
         this.classList.toggle('is-empty', parsedState.item_count === 0);
         const cartDrawerWrapper = document.querySelector('cart-drawer');
@@ -154,7 +162,7 @@ class CartItems extends HTMLElement {
           }
         }
         this.updateLiveRegions(line, message);
-
+        // console.log(parsedState.item_count);
         const lineItem =
           document.getElementById(`CartItem-${line}`) || document.getElementById(`CartDrawer-Item-${line}`);
         if (lineItem && lineItem.querySelector(`[name="${name}"]`)) {
@@ -167,7 +175,49 @@ class CartItems extends HTMLElement {
           trapFocus(cartDrawerWrapper, document.querySelector('.cart-item__name'));
         }
 
+        
         publish(PUB_SUB_EVENTS.cartUpdate, { source: 'cart-items', cartData: parsedState, variantId: variantId });
+
+       // console.log("quantity : " + quantity + ", variant id : "+variantId);
+        if(variantId === '46901487108376' && quantity == 0){
+           // console.log(variantId);
+            // Define the variant ID you want to remove
+            const variantIdToRemove = '46874731217176';
+            
+            // Make a request to remove the variant from the cart
+            fetch('/cart/change.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: variantIdToRemove,
+                quantity: 0, // Set quantity to 0 to remove the variant
+              }),
+            })
+              .then((response) => response.json())
+              .then((cartData) => {
+                // Handle the response after removing the variant if needed
+                console.log('Product variant removed:', cartData);
+                location.reload();
+           
+                this.onCartUpdate();
+        
+            
+              })
+              .catch((error) => {
+                console.error('Error removing product variant:', error);
+              });
+              // console.log(parsedStategift.item_count);
+              // if (parsedStategift.item_count === 0){
+              //  let cartitem = document.querySelector("cart-items");
+              //  cartitem.className = "page-width is-empty";
+
+              //  let cartfooter = document.querySelector("#main-cart-footer");
+              //  cartfooter.className = "page-width is-empty";
+              // }
+          }
+        
       })
       .catch(() => {
         this.querySelectorAll('.loading-overlay').forEach((overlay) => overlay.classList.add('hidden'));
@@ -177,6 +227,7 @@ class CartItems extends HTMLElement {
       .finally(() => {
         this.disableLoading(line);
       });
+    
   }
 
   updateLiveRegions(line, message) {
@@ -244,3 +295,6 @@ if (!customElements.get('cart-note')) {
     }
   );
 }
+
+
+
